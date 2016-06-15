@@ -1,7 +1,6 @@
-package com.huchiwei.zhihudailynews.api;
+package com.huchiwei.zhihudailynews.modules.news.api;
 
-import com.huchiwei.zhihudailynews.entity.ListNewsResult;
-
+import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
@@ -14,5 +13,5 @@ import retrofit2.http.GET;
 public interface NewsService {
 
     @GET("news/latest")
-    Call<ListNewsResult> findLastNews();
+    Call<News4List> findLastNews();
 }

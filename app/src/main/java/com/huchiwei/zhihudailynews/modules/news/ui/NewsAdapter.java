@@ -1,4 +1,4 @@
-package com.huchiwei.zhihudailynews.ui;
+package com.huchiwei.zhihudailynews.modules.news.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huchiwei.zhihudailynews.R;
-import com.huchiwei.zhihudailynews.entity.News;
+import com.huchiwei.zhihudailynews.modules.news.entity.News;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class NewsAdapter extends ArrayAdapter<News> {
 
         List<String> images = news.getImages();
         if(images.size() > 0)
-            imageView.setImageResource(getContext().getResources().getIdentifier(images.get(0), "drawable", "com.huchiwei.zhihudailynews.ui"));
+            imageView.setImageResource(getContext().getResources().getIdentifier(images.get(0), "drawable", "com.huchiwei.zhihudailynews.modules.news.ui"));
         textView.setText(news.getTitle());
         return view;
     }
