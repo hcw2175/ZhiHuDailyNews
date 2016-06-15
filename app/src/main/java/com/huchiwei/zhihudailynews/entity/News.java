@@ -24,6 +24,8 @@ public class News {
     private List<RecommendersBean> recommenders;               // 推荐者
     private List<String> css;                                  // 样式，供手机端的 WebView(UIWebView) 使用
 
+    private List<String> images;                               // 列表封面图片
+
 
     /**
      * 推荐用户
@@ -115,7 +117,6 @@ public class News {
     public List<RecommendersBean> getRecommenders() {
         return recommenders;
     }
-
     public void setRecommenders(List<RecommendersBean> recommenders) {
         this.recommenders = recommenders;
     }
@@ -123,8 +124,14 @@ public class News {
     public List<String> getCss() {
         return css;
     }
-
     public void setCss(List<String> css) {
         this.css = css;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }
