@@ -1,18 +1,18 @@
-package com.huchiwei.zhihudailynews.entity;
+package com.huchiwei.zhihudailynews.modules.news.entity;
 
 import java.util.List;
 
 /**
- * 最新新闻列表数据
+ * 列表新闻信息
  *
  * @author huchiwei
  * @version 1.0.0
  */
-public class LastNewsResult {
+public class News4List{
 
     private String date;                              // 最新日期
     private List<News> stories;                       // 最新新闻
-    private List<News> topStories;                    // 推荐新闻(ViewPaper)
+    private List<News> top_stories;                    // 推荐新闻(ViewPaper)
 
     // =========================================================================
     // setter/getter ===========================================================
@@ -30,10 +30,10 @@ public class LastNewsResult {
         this.stories = stories;
     }
 
-    public List<News> getTopStories() {
-        return topStories;
+    public List<News> getTop_stories() {
+        return top_stories;
     }
-    public void setTopStories(List<News> topStories) {
-        this.topStories = topStories;
+    public void setTop_stories(List<News> top_stories) {
+        this.top_stories = top_stories;
     }
 }
