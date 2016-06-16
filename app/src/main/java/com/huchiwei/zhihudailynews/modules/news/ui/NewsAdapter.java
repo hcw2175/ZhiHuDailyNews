@@ -3,9 +3,6 @@ package com.huchiwei.zhihudailynews.modules.news.ui;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.util.Log;
-import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huchiwei.zhihudailynews.R;
-import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.modules.news.entity.News;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,7 +23,6 @@ import java.util.List;
  * @version 1.0.0
  */
 public class NewsAdapter extends RecyclerView.Adapter {
-    private static final String TAG = "NewsAdapter";
     private static final int TYPE_NORMAL = 0;
     private static final int TYPE_GROUP = 1;
 

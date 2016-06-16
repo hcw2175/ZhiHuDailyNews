@@ -1,6 +1,7 @@
 package com.huchiwei.zhihudailynews;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,8 @@ import com.huchiwei.zhihudailynews.modules.news.ui.NewsAdapter;
 
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,7 +26,9 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private RecyclerView mNewsRecyclerView;
+    @BindView(R.id.news_recycler_view) RecyclerView mNewsRecyclerView;
+
+    @BindView(R.id.activity_main) SwipeRefreshLayout mSwipeRefreshLayout;
 
     private NewsAdapter mNewsAdapter;
 
@@ -32,23 +37,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNewsRecyclerView = (RecyclerView) findViewById(R.id.news_recycler_view);
+        // 绑定各种View
+        ButterKnife.setDebug(true);
+        ButterKnife.bind(MainActivity.this);
 
-        // 添加内置布局管理器
+        // RecyclerView处理
         mNewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // 添加动画
         mNewsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        // 添加间隔
-        /*mNewsRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                if (parent.)
-                outRect.bottom = 10;
-            }
-        });*/
-        // 固定大小
         mNewsRecyclerView.setHasFixedSize(true);
 
+        // 下拉刷新
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.swipe_refresh_red, R.color.swipe_refresh_blue, R.color.swipe_refresh_green);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchLastNews();
+            }
+        });
+
+        // 拉取新闻
+        this.fetchLastNews();
+    }
+
+    /**
+     * 拉取最新的新闻
+     */
+    public void fetchLastNews(){
         NewsService newsService = RetrofitHelper.createApi(this, NewsService.class);
         newsService.findLastNews().enqueue(new Callback<News4List>() {
             @Override
@@ -61,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     if(null != news4List.getTop_stories())
                         Log.d(TAG, "推荐新闻" + news4List.getTop_stories().size() + "条");
 
-                    String mDate = "";
+                    String mDate;
                     Date groupDate = DateUtil.parseDate(news4List.getDate());
                     if(DateUtil.isToday(groupDate)){
                         mDate = "今日热闻";
@@ -75,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "onBindViewHolder: " + mDate);
                     mNewsAdapter = new NewsAdapter(MainActivity.this, mDate, news4List.getStories());
                     mNewsRecyclerView.setAdapter(mNewsAdapter);
+
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
 

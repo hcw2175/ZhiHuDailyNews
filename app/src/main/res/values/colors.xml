@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorAccent">#FF4081</color>
+    
     <color name="colorViewBackground">#F3F3F3</color>
+    
+    <color name="swipe_refresh_red">#f34235</color>
+    <color name="swipe_refresh_blue">#2196f3</color>
+    <color name="swipe_refresh_green">#4bae4f</color>
 </resources>
