@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">ZhiHuDailyNews</string>
+    <string name="app_name">知乎新闻</string>
+    <string name="news_cover_image">知乎新闻图片</string>
 </resources>

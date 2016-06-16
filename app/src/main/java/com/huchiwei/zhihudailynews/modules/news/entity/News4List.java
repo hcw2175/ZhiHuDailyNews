@@ -12,7 +12,7 @@ public class News4List{
 
     private String date;                              // 最新日期
     private List<News> stories;                       // 最新新闻
-    private List<News> top_stories;                    // 推荐新闻(ViewPaper)
+    private List<News> top_stories;                   // 推荐新闻(ViewPaper)
 
     // =========================================================================
     // setter/getter ===========================================================
