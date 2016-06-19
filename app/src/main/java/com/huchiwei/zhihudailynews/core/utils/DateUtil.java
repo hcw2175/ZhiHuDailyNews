@@ -658,9 +658,7 @@ public class DateUtil {
      * @return
      */
     public static boolean isToday(Date date){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        return isSameDay(date, calendar.getTime());
+        return isSameDay(date, new Date());
     }
 
     /**

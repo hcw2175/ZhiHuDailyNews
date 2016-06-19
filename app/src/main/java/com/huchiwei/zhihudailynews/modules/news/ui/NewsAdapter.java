@@ -1,9 +1,9 @@
 package com.huchiwei.zhihudailynews.modules.news.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +14,16 @@ import com.huchiwei.zhihudailynews.R;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 import com.huchiwei.zhihudailynews.modules.news.entity.News;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
+import com.jude.rollviewpager.RollPagerView;
+import com.jude.rollviewpager.hintview.ColorPointHintView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * 新闻列表适配器
@@ -28,31 +33,23 @@ import java.util.List;
  */
 public class NewsAdapter extends RecyclerView.Adapter {
     private static final String TAG = "NewsAdapter";
-    private static final int TYPE_NORMAL = 0;
-    private static final int TYPE_GROUP = 1;
+
+    private static final int VT_BANNER = 0;
+    private static final int VT_NEWS = 1;
 
     private Context mContext;
-    private String mDate;
     private List<News> mNewses;
-    private News firstNews;                 // 每次请求第一条新闻,用于判断显示不同布局
+    private List<News> mTopNewses;
 
-    private int size = 0;
-
-    public NewsAdapter(Context context, String date, List<News> newses) {
+    public NewsAdapter(Context context, News4List news4List, String newsDate) {
         this.mContext = context;
-        this.mNewses = newses;
-        firstNews = newses.get(0);
+        this.mNewses = this.parseNews(news4List.getStories(), newsDate);
 
-        Date groupDate = DateUtil.parseDate(date);
-        if(DateUtil.isToday(groupDate)){
-            this.mDate = "今日热闻";
-        }else if(DateUtil.isYesterday(groupDate)){
-            this.mDate = "昨日热闻";
-        }else if(DateUtil.year(groupDate) != DateUtil.year(new Date())){
-            this.mDate = DateUtil.format(groupDate, "yyyy年MM月dd日");
-        }else{
-            this.mDate = DateUtil.format(groupDate, "MM月dd日");
+        if(null != news4List.getTop_stories()){
+            this.mTopNewses = news4List.getTop_stories();
         }
+
+        this.notifyDataSetChanged();
     }
 
     /**
@@ -65,10 +62,10 @@ public class NewsAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        if(viewType == TYPE_GROUP){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_group_card_view, parent, false);
-            return new ViewGroupHolder(view);
-        } else {
+        if(viewType == VT_BANNER){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_banner_view, parent, false);
+            return new ViewBannerHolder(view);
+        }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card_view, parent, false);
             return new ViewNormalHolder(view);
         }
@@ -83,83 +80,130 @@ public class NewsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         News news = this.mNewses.get(position);
         if(null != news){
-            if(holder instanceof ViewGroupHolder){
-                ViewGroupHolder viewGroupHolder = (ViewGroupHolder)holder;
-                viewGroupHolder.mNewsDate.setText(this.mDate);
-                this.bindViewNormalHolderData(news, viewGroupHolder.mNewsTitle, viewGroupHolder.mNewsCoverImage);
+            if(holder instanceof ViewBannerHolder){
+                ViewBannerHolder viewBannerHolder = (ViewBannerHolder)holder;
+                viewBannerHolder.setAdapter(this.mTopNewses);
+
+                updateViewHolder(viewBannerHolder, news, position);
             }else{
-                // 绑定viewNormalHolder数据
                 ViewNormalHolder viewNormalHolder = (ViewNormalHolder)holder;
-                this.bindViewNormalHolderData(news, viewNormalHolder.mNewsTitle, viewNormalHolder.mNewsCoverImage);
+                updateViewHolder(viewNormalHolder, news, position);
             }
         }
     }
 
     /**
      * 获取数据数量
-     * @return
+     * @return 新闻数量
      */
     @Override
     public int getItemCount() {
         return mNewses == null ? 0 : mNewses.size();
     }
 
-    /**
-     * 获取元素布局类型
-     * @param position 布局类型
-     * @return
-     */
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? TYPE_GROUP : TYPE_NORMAL;
+        return position==0 ? VT_BANNER : VT_NEWS;
     }
 
     /**
      * 自定义ViewHolder
      */
     public static class ViewNormalHolder extends RecyclerView.ViewHolder {
-        public TextView mNewsTitle;
-        public ImageView mNewsCoverImage;
+        @BindView(R.id.news_group_date) TextView mNewsDate;
+        @BindView(R.id.news_title) TextView mNewsTitle;
+        @BindView(R.id.news_cover_img) ImageView mNewsCoverImage;
 
         public ViewNormalHolder(View v) {
             super(v);
-            mNewsTitle = (TextView) v.findViewById(R.id.news_title);
-            mNewsCoverImage = (ImageView) v.findViewById(R.id.news_cover_img);
+            ButterKnife.bind(this, v);
         }
     }
 
     /**
-     * 自定义ViewHolder, 用于显示带日期布局
+     * 带Banner的Holder
      */
-    public static class ViewGroupHolder extends ViewNormalHolder {
-        public TextView mNewsDate;
+    public static class ViewBannerHolder extends ViewNormalHolder {
+        @BindView(R.id.news_top_banner)
+        RollPagerView mRollPagerView;
 
-        public ViewGroupHolder(View v) {
+        public ViewBannerHolder(View v) {
             super(v);
-            mNewsDate = (TextView) v.findViewById(R.id.news_group_date);
+            ButterKnife.bind(this, v);
+
+            this.mRollPagerView.setHintView(new ColorPointHintView(v.getContext(), Color.YELLOW, Color.WHITE));
+        }
+
+        public void setAdapter(List<News> topNewses){
+            this.mRollPagerView.setAdapter(new TopNewsLoopAdapter(mRollPagerView, topNewses));
         }
     }
+
 
     /**
      * 添加新闻列表
      * @param newses
      */
-    public void addNewses(String newsDate, List<News> newses){
+    public void addNewses(List<News> newses, String newsDate){
         if(null == newses || newses.size() == 0)
             return;
 
-        this.mDate = newsDate;
-        this.mNewses.addAll(newses);
-        firstNews = newses.get(0);
-        this.notifyDataSetChanged();
+        int orgSize = this.mNewses.size();
+
+        List<News> newsList = parseNews(newses, newsDate);
+        this.mNewses.addAll(newsList);
+
+        // 通知数据变化
+        this.notifyItemRangeInserted(orgSize, newses.size());
     }
 
     // ==================================================================
     // private methods ==================================================
-    private void bindViewNormalHolderData(News news, TextView mNewsTitle, ImageView mNewsCoverImage){
-        mNewsTitle.setText(news.getTitle());
+    public void updateViewHolder(ViewNormalHolder viewNormalHolder, News news, int position){
+        viewNormalHolder.mNewsTitle.setText(news.getTitle());
+        viewNormalHolder.mNewsDate.setText(news.getPublishDate());
         if(!TextUtils.isEmpty(news.getListCoverImage())){
-            ImageUtil.displayImage(mContext, news.getListCoverImage(), mNewsCoverImage);
+            ImageUtil.displayImage(mContext, news.getListCoverImage(), viewNormalHolder.mNewsCoverImage);
         }
+
+        if(position == 0){
+            viewNormalHolder.mNewsDate.setVisibility(View.VISIBLE);
+        } else {
+            News beforeNews = this.mNewses.get(position-1);
+            if(!beforeNews.getPublishDate().equalsIgnoreCase(news.getPublishDate())){
+                viewNormalHolder.mNewsDate.setVisibility(View.VISIBLE);
+            } else {
+                viewNormalHolder.mNewsDate.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /**
+     * 重新解析新闻，设置时间
+     * @param newses 新闻列表
+     * @param date   新闻事件
+     * @return
+     */
+    private List<News> parseNews(List<News> newses, String date){
+        if(null == newses || newses.size()==0)
+            return null;
+
+        Date groupDate = DateUtil.parseDate(date);
+        if(DateUtil.isToday(groupDate)){
+            date = "今日热闻";
+        }else if(DateUtil.isYesterday(groupDate)){
+            date = "昨日热闻";
+        }else if(DateUtil.year(groupDate) != DateUtil.year(new Date())){
+            date = DateUtil.format(groupDate, "yyyy年MM月dd日");
+        }else{
+            date = DateUtil.format(groupDate, "MM月dd日");
+        }
+
+        List<News> newsList = new ArrayList<>();
+        for (News news : newses){
+            news.setPublishDate(date);
+            newsList.add(news);
+        }
+        return newsList;
     }
 }

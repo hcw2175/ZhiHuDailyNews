@@ -15,10 +15,11 @@ public class News extends IdEntity {
 
     private String title;                                      // 标题
     private String body;                                       // 正文
-    private String image;                                      // 封面图片
+    private String image;                                      // 封面大图，新闻明细或置顶新闻都有该属性
     private String image_source;                               // 图片版权
     private String share_url;                                  // 分享的URL
     private int type;                                          // 新闻类型, 0:普通新闻，1：推荐新闻
+    private String publishDate;                                // 发布时间
 
     private List<String> images;                               // 封面图, 列表使用
 
@@ -77,5 +78,12 @@ public class News extends IdEntity {
     }
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public String getPublishDate() {
+        return publishDate;
+    }
+    public void setPublishDate(String publishDate) {
+        this.publishDate = publishDate;
     }
 }
