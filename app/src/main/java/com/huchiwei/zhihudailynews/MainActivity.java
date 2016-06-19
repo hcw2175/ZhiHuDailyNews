@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.huchiwei.zhihudailynews.common.widgets.LoadMoreView;
 import com.huchiwei.zhihudailynews.core.retrofit.RetrofitHelper;
@@ -59,14 +61,6 @@ public class MainActivity extends AppCompatActivity {
             public void onLoadMoreItems() {
                 Log.d(TAG, "onLoadMoreItems: 加载更多" );
                 fetchNews(true);
-            }
-        });
-
-        mRefreshRecyclerView.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Log.d(TAG, "onScrolled: " + dx + "_"+ + dy);
             }
         });
 
