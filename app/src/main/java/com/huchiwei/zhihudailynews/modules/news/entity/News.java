@@ -26,7 +26,7 @@ public class News extends IdEntity {
     // ==========================================================
     // methods ==================================================
     public String getListCoverImage(){
-        return images.size() > 0 ? images.get(0) : "";
+        return images != null ? images.get(0) : "";
     }
 
     // ==========================================================

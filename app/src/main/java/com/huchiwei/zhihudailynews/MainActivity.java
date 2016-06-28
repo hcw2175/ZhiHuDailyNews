@@ -1,17 +1,19 @@
 package com.huchiwei.zhihudailynews;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.huchiwei.zhihudailynews.common.widgets.LoadMoreView;
-import com.huchiwei.zhihudailynews.core.retrofit.RetrofitHelper;
+import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
+import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
+import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;
 import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
 import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
 import com.huchiwei.zhihudailynews.modules.news.ui.NewsAdapter;
@@ -63,6 +65,21 @@ public class MainActivity extends AppCompatActivity {
                 fetchNews(true);
             }
         });
+
+        // 点击事件
+        RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(mRefreshRecyclerView.getRecyclerView()) {
+            @Override
+            public void onItemClick(RecyclerView.ViewHolder holder) {
+                NewsAdapter.ViewNormalHolder viewNormalHolder = (NewsAdapter.ViewNormalHolder) holder;
+                //Log.d(TAG, "onItemClick: " + viewNormalHolder.getNewsId());
+
+                Intent detailIntent = new Intent(MainActivity.this, NewsDetailActivity.class);
+                detailIntent.putExtra("newsId", viewNormalHolder.getNewsId());
+                startActivity(detailIntent);
+            }
+        };
+        mRefreshRecyclerView.getRecyclerView().addOnItemTouchListener(itemClickListener);
+
 
         if(null != getSupportActionBar())
             getSupportActionBar().setTitle("今日热文");

@@ -63,10 +63,10 @@ public class NewsAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         if(viewType == VT_BANNER){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_banner_view, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_banner, parent, false);
             return new ViewBannerHolder(view);
         }else{
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_card_view, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_card, parent, false);
             return new ViewNormalHolder(view);
         }
     }
@@ -109,21 +109,30 @@ public class NewsAdapter extends RecyclerView.Adapter {
     /**
      * 自定义ViewHolder
      */
-    public static class ViewNormalHolder extends RecyclerView.ViewHolder {
+    public class ViewNormalHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.news_group_date) TextView mNewsDate;
         @BindView(R.id.news_title) TextView mNewsTitle;
         @BindView(R.id.news_cover_img) ImageView mNewsCoverImage;
 
+        private int newsId;
+
         public ViewNormalHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
+        }
+
+        public int getNewsId() {
+            return newsId;
+        }
+        public void setNewsId(int newsId) {
+            this.newsId = newsId;
         }
     }
 
     /**
      * 带Banner的Holder
      */
-    public static class ViewBannerHolder extends ViewNormalHolder {
+    public class ViewBannerHolder extends ViewNormalHolder {
         @BindView(R.id.news_top_banner)
         RollPagerView mRollPagerView;
 
@@ -176,6 +185,8 @@ public class NewsAdapter extends RecyclerView.Adapter {
                 viewNormalHolder.mNewsDate.setVisibility(View.GONE);
             }
         }
+
+        viewNormalHolder.setNewsId(news.getId());
     }
 
     /**

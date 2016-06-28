@@ -9,4 +9,7 @@
     <color name="swipe_refresh_red">#f34235</color>
     <color name="swipe_refresh_blue">#2196f3</color>
     <color name="swipe_refresh_green">#4bae4f</color>
+
+    <color name="white">#fff</color>
+    <color name="light">#cecece</color>
 </resources>
