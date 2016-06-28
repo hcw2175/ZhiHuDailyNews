@@ -3,7 +3,7 @@
  * All rights reserved
  * Created on 2016-06-04
  */
-package com.huchiwei.zhihudailynews.core.retrofit;
+package com.huchiwei.zhihudailynews.core.helper;
 
 import android.content.Context;
 
