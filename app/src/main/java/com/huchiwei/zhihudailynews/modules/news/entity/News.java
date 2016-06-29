@@ -20,6 +20,7 @@ public class News extends IdEntity {
     private String share_url;                                  // 分享的URL
     private int type;                                          // 新闻类型, 0:普通新闻，1：推荐新闻
     private String publishDate;                                // 发布时间
+    private List<String> css;                                  // 详情页显示样式
 
     private List<String> images;                               // 封面图, 列表使用
 
@@ -85,5 +86,12 @@ public class News extends IdEntity {
     }
     public void setPublishDate(String publishDate) {
         this.publishDate = publishDate;
+    }
+
+    public List<String> getCss() {
+        return css;
+    }
+    public void setCss(List<String> css) {
+        this.css = css;
     }
 }
