@@ -4,19 +4,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme">
+        android:layout_gravity="top">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
             <ImageView
                 android:id="@+id/nd_coverImg"
@@ -37,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:padding="5dp"/>
 
                 <TextView
@@ -46,21 +47,19 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/light"
                     android:textSize="12sp"
-                    android:paddingTop="70dp"
+                    android:paddingTop="60dp"
                     android:paddingBottom="10dp"
                     android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
                     android:gravity="end"/>
             </RelativeLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <WebView
@@ -69,59 +68,3 @@
             android:layout_height="wrap_content"></WebView>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>
-
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="180dp">
-
-        <ImageView
-            android:id="@+id/nd_coverImg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/news_cover_image" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            android:background="#40000000">
-
-            <TextView
-                android:id="@+id/nd_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:padding="5dp"/>
-
-            <TextView
-                android:id="@+id/nd_image_source"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/light"
-                android:textSize="12sp"
-                android:padding="5dp"
-                android:gravity="end"/>
-        </LinearLayout>
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/nd_body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"/>
-    <WebView
-        android:id="@+id/nd_body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"></WebView>
-</LinearLayout>-->

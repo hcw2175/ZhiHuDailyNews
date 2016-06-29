@@ -65,6 +65,8 @@ public class NewsDetailActivity extends AppCompatActivity {
         mBody.getSettings().setBuiltInZoomControls(false);
         // 单列显示内容
         mBody.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        //缓存
+        mBody.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         // 延缓图片加载
         mBody.getSettings().setBlockNetworkImage(true);
 
@@ -85,6 +87,8 @@ public class NewsDetailActivity extends AppCompatActivity {
                     ImageUtil.displayImage(NewsDetailActivity.this, mNews.getImage(), mCoverImg);
 
                     String html = mNews.getBody();
+                    // 替换头部图片空白占位html
+                    html = html.replace("<div class=\"img-place-holder\">", "").replace("<div class=\"headline\">", "");
                     if(null != mNews.getCss()){
                         html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + mNews.getCss().get(0) +"\" />" + html;
                     }

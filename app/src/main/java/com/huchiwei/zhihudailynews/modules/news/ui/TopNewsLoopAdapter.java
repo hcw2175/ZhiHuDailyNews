@@ -2,7 +2,11 @@ package com.huchiwei.zhihudailynews.modules.news.ui;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 import com.huchiwei.zhihudailynews.modules.news.entity.News;
@@ -22,10 +26,6 @@ public class TopNewsLoopAdapter extends LoopPagerAdapter{
 
     private List<String> topImages;
 
-    public TopNewsLoopAdapter(RollPagerView viewPager){
-        super(viewPager);
-    }
-
     public TopNewsLoopAdapter(RollPagerView viewPager, List<News> topNews){
         super(viewPager);
 
@@ -39,13 +39,29 @@ public class TopNewsLoopAdapter extends LoopPagerAdapter{
 
     @Override
     public View getView(ViewGroup container, int position) {
-        ImageView view = new ImageView(container.getContext());
-        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        FrameLayout frameLayout = new FrameLayout(container.getContext());
+        frameLayout.setLayoutParams(layoutParams);
+
+        // 图片
+        ImageView imageView = new ImageView(container.getContext());
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setLayoutParams(layoutParams);
         // 显示图片
-        ImageUtil.displayImage(container.getContext(), this.topImages.get(position), view);
-        return view;
+        ImageUtil.displayImage(container.getContext(), this.topImages.get(position), imageView);
+
+        // 标题
+        layoutParams.setMargins(0,0,0,20);
+        TextView textView = new TextView(container.getContext());
+        imageView.setLayoutParams(layoutParams);
+        textView.setText("图片标题");
+
+
+        frameLayout.addView(imageView);
+        frameLayout.addView(textView);
+
+        return frameLayout;
     }
 
     @Override
