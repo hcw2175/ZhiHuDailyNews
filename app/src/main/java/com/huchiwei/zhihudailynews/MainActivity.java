@@ -1,12 +1,12 @@
 package com.huchiwei.zhihudailynews;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.huchiwei.zhihudailynews.common.widgets.LoadMoreView;
@@ -14,12 +14,17 @@ import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;
+import com.huchiwei.zhihudailynews.modules.news.adapter.TopNewsLoopAdapter;
 import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
+import com.huchiwei.zhihudailynews.modules.news.entity.News;
 import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
-import com.huchiwei.zhihudailynews.modules.news.ui.NewsAdapter;
+import com.huchiwei.zhihudailynews.modules.news.adapter.NewsAdapter;
+import com.jude.rollviewpager.RollPagerView;
+import com.jude.rollviewpager.hintview.ColorPointHintView;
 import com.lhh.ptrrv.library.PullToRefreshRecyclerView;
 
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     PullToRefreshRecyclerView mRefreshRecyclerView;
 
     private NewsAdapter mNewsAdapter;
+
     private Date mNewsDate = new Date();
 
     @Override
@@ -70,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(mRefreshRecyclerView.getRecyclerView()) {
             @Override
             public void onItemClick(RecyclerView.ViewHolder holder) {
+
                 NewsAdapter.ViewNormalHolder viewNormalHolder = (NewsAdapter.ViewNormalHolder) holder;
                 //Log.d(TAG, "onItemClick: " + viewNormalHolder.getNewsId());
 
@@ -79,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mRefreshRecyclerView.getRecyclerView().addOnItemTouchListener(itemClickListener);
-
 
         if(null != getSupportActionBar())
             getSupportActionBar().setTitle("今日热文");
@@ -125,8 +131,6 @@ public class MainActivity extends AppCompatActivity {
             News4List news4List = response.body();
             Log.d(TAG, "新闻日期: " + news4List.getDate());
             Log.d(TAG, "当天新闻" + response.body().getStories().size() + "条");
-            if(null != news4List.getTop_stories())
-                Log.d(TAG, "推荐新闻" + news4List.getTop_stories().size() + "条");
 
             mNewsDate = DateUtil.parseDate(news4List.getDate());
             if(null == mNewsAdapter){

@@ -23,8 +23,6 @@ public class AppConfig {
     /** 图片URL **/
     public static final String BASE_IMAGE_URL = "http://news-at.zhihu.com/api/4/";
 
-
-
     /**
      * 获取api基本URL, baseUrl总是以/结束，@URL不要以/开头
      * @return BaseUrl

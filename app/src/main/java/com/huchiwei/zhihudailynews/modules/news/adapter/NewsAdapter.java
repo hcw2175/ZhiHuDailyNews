@@ -1,4 +1,4 @@
-package com.huchiwei.zhihudailynews.modules.news.ui;
+package com.huchiwei.zhihudailynews.modules.news.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
