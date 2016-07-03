@@ -1,30 +1,21 @@
 package com.huchiwei.zhihudailynews;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.huchiwei.zhihudailynews.common.widgets.LoadMoreView;
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;
-import com.huchiwei.zhihudailynews.modules.news.adapter.TopNewsLoopAdapter;
-import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
-import com.huchiwei.zhihudailynews.modules.news.entity.News;
-import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
 import com.huchiwei.zhihudailynews.modules.news.adapter.NewsAdapter;
-import com.jude.rollviewpager.RollPagerView;
-import com.jude.rollviewpager.hintview.ColorPointHintView;
-import com.lhh.ptrrv.library.PullToRefreshRecyclerView;
+import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
+import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
 
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,10 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     @BindView(R.id.news_recycler_view)
-    PullToRefreshRecyclerView mRefreshRecyclerView;
+    RecyclerView mNewsListView;
 
     private NewsAdapter mNewsAdapter;
-
     private Date mNewsDate = new Date();
 
     @Override
@@ -50,45 +40,23 @@ public class MainActivity extends AppCompatActivity {
         // 绑定View
         ButterKnife.bind(MainActivity.this);
 
-        // 下拉刷新
-        mRefreshRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRefreshRecyclerView.setColorSchemeResources(R.color.swipe_refresh_red, R.color.swipe_refresh_blue, R.color.swipe_refresh_green);
-        mRefreshRecyclerView.setSwipeEnable(true);
-        mRefreshRecyclerView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fetchNews(false);
-            }
-        });
-
-        // 上拉加载更多
-        LoadMoreView loadMoreView = new LoadMoreView(this, mRefreshRecyclerView.getRecyclerView());
-        mRefreshRecyclerView.setLoadMoreFooter(loadMoreView);
-        mRefreshRecyclerView.setPagingableListener(new PullToRefreshRecyclerView.PagingableListener() {
-            @Override
-            public void onLoadMoreItems() {
-                Log.d(TAG, "onLoadMoreItems: 加载更多" );
-                fetchNews(true);
-            }
-        });
+        mNewsListView.setLayoutManager(new LinearLayoutManager(this));
 
         // 点击事件
-        RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(mRefreshRecyclerView.getRecyclerView()) {
+        RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(mNewsListView) {
             @Override
             public void onItemClick(RecyclerView.ViewHolder holder) {
-
                 NewsAdapter.ViewNormalHolder viewNormalHolder = (NewsAdapter.ViewNormalHolder) holder;
-                //Log.d(TAG, "onItemClick: " + viewNormalHolder.getNewsId());
-
                 Intent detailIntent = new Intent(MainActivity.this, NewsDetailActivity.class);
                 detailIntent.putExtra("newsId", viewNormalHolder.getNewsId());
                 startActivity(detailIntent);
             }
         };
-        mRefreshRecyclerView.getRecyclerView().addOnItemTouchListener(itemClickListener);
+        mNewsListView.addOnItemTouchListener(itemClickListener);
 
-        if(null != getSupportActionBar())
-            getSupportActionBar().setTitle("今日热文");
+
+        //if(null != getSupportActionBar())
+        //    getSupportActionBar().setTitle("今日热文");
 
         // 拉取新闻
         this.fetchNews(false);
@@ -102,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<News4List> call, Response<News4List> response) {
                     mNewsAdapter = null;
-                    parseData(response);
+                    parseData(response, false);
                 }
 
                 @Override
@@ -115,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             newsService.fetchHistoryNews(newsDate).enqueue(new Callback<News4List>() {
                 @Override
                 public void onResponse(Call<News4List> call, Response<News4List> response) {
-                    parseData(response);
+                    parseData(response, true);
                 }
 
                 @Override
@@ -126,24 +94,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void parseData(Response<News4List> response){
+    private void parseData(Response<News4List> response, boolean isHistory){
         if(response.isSuccessful()){
             News4List news4List = response.body();
             Log.d(TAG, "新闻日期: " + news4List.getDate());
-            Log.d(TAG, "当天新闻" + response.body().getStories().size() + "条");
+            Log.d(TAG, "当天新闻" + news4List.getStories().size() + "条");
+
+            if(!isHistory && null != news4List.getTop_stories()){
+                Log.d(TAG, "当天推荐" + news4List.getTop_stories().size() + "条");
+            }
 
             mNewsDate = DateUtil.parseDate(news4List.getDate());
             if(null == mNewsAdapter){
                 mNewsAdapter = new NewsAdapter(MainActivity.this, news4List, news4List.getDate());
-                mRefreshRecyclerView.setAdapter(mNewsAdapter);
+                mNewsListView.setAdapter(mNewsAdapter);
             }else{
                 mNewsAdapter.addNewses(news4List.getStories(), news4List.getDate());
             }
-
-            mRefreshRecyclerView.setRefreshing(false);
-
-            // 设置是否可以加载更多
-            mRefreshRecyclerView.onFinishLoading(true, false);
         }else{
             Log.e(TAG, "新闻消息获取失败: " + response.message(), null);
         }

@@ -1,7 +1,6 @@
 package com.huchiwei.zhihudailynews.modules.news.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,8 +14,6 @@ import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 import com.huchiwei.zhihudailynews.modules.news.entity.News;
 import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
-import com.jude.rollviewpager.RollPagerView;
-import com.jude.rollviewpager.hintview.ColorPointHintView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,13 +59,16 @@ public class NewsAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
-        if(viewType == VT_BANNER){
+        /*if(viewType == VT_BANNER){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_banner, parent, false);
             return new ViewBannerHolder(view);
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_card, parent, false);
             return new ViewNormalHolder(view);
-        }
+        }*/
+
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_card, parent, false);
+        return new ViewNormalHolder(view);
     }
 
     /**
@@ -80,7 +80,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         News news = this.mNewses.get(position);
         if(null != news){
-            if(holder instanceof ViewBannerHolder){
+            /*if(holder instanceof ViewBannerHolder){
                 ViewBannerHolder viewBannerHolder = (ViewBannerHolder)holder;
                 viewBannerHolder.setAdapter(this.mTopNewses);
 
@@ -89,6 +89,9 @@ public class NewsAdapter extends RecyclerView.Adapter {
                 ViewNormalHolder viewNormalHolder = (ViewNormalHolder)holder;
                 updateViewHolder(viewNormalHolder, news, position);
             }
+            */
+            ViewNormalHolder viewNormalHolder = (ViewNormalHolder)holder;
+            updateViewHolder(viewNormalHolder, news, position);
         }
     }
 
@@ -132,7 +135,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
     /**
      * 带Banner的Holder
      */
-    public class ViewBannerHolder extends ViewNormalHolder {
+    /*public class ViewBannerHolder extends ViewNormalHolder {
         @BindView(R.id.news_top_banner)
         RollPagerView mRollPagerView;
 
@@ -146,7 +149,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
         public void setAdapter(List<News> topNewses){
             this.mRollPagerView.setAdapter(new TopNewsLoopAdapter(mRollPagerView, topNewses));
         }
-    }
+    }*/
 
 
     /**
