@@ -2,6 +2,7 @@ package com.huchiwei.zhihudailynews;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,8 +30,12 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.news_recycler_view)
     RecyclerView mNewsListView;
 
+    @BindView(R.id.news_swipe_refresh)
+    SwipeRefreshLayout mNewsSwipeRefresh;
+
     private NewsAdapter mNewsAdapter;
     private Date mNewsDate = new Date();
+    private LinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,9 @@ public class MainActivity extends AppCompatActivity {
         // 绑定View
         ButterKnife.bind(MainActivity.this);
 
-        mNewsListView.setLayoutManager(new LinearLayoutManager(this));
+        // 初始化RecyclerView
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        mNewsListView.setLayoutManager(mLinearLayoutManager);
 
         // 点击事件
         RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(mNewsListView) {
@@ -54,6 +61,28 @@ public class MainActivity extends AppCompatActivity {
         };
         mNewsListView.addOnItemTouchListener(itemClickListener);
 
+        // 下拉刷新
+        mNewsSwipeRefresh.setColorSchemeResources(R.color.swipe_refresh_red, R.color.swipe_refresh_blue, R.color.swipe_refresh_green);
+        mNewsSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchNews(false);
+            }
+        });
+
+        mNewsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                //super.onScrolled(recyclerView, dx, dy);
+                /*int totalCount = mLinearLayoutManager.getItemCount();
+                int lastVisible = mLinearLayoutManager.findLastVisibleItemPosition();
+                // 列表可见项只剩下4项并且向下滚动时加载更多
+                Log.d(TAG, "totalCount: " + totalCount + ", lastVisible: "+ lastVisible);
+                if(totalCount-lastVisible >= 4 && dy > 0){
+                    fetchNews(true);
+                }*/
+            }
+        });
 
         //if(null != getSupportActionBar())
         //    getSupportActionBar().setTitle("今日热文");
@@ -111,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 mNewsAdapter.addNewses(news4List.getStories(), news4List.getDate());
             }
+
+            mNewsSwipeRefresh.setRefreshing(false);
         }else{
             Log.e(TAG, "新闻消息获取失败: " + response.message(), null);
         }

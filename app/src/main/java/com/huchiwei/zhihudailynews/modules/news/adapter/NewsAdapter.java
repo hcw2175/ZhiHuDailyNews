@@ -63,11 +63,11 @@ public class NewsAdapter extends RecyclerView.Adapter {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_banner, parent, false);
             return new ViewBannerHolder(view);
         }else{
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_card, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_news_list, parent, false);
             return new ViewNormalHolder(view);
         }*/
 
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_list_card, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_news_list, parent, false);
         return new ViewNormalHolder(view);
     }
 
