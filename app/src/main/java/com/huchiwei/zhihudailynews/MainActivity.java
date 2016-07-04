@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
+import com.huchiwei.zhihudailynews.core.support.RecyclerLoadMoreListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;
 import com.huchiwei.zhihudailynews.modules.news.adapter.NewsAdapter;
@@ -70,17 +71,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mNewsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        // 上拉加载更多
+        mNewsListView.addOnScrollListener(new RecyclerLoadMoreListener(mLinearLayoutManager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                //super.onScrolled(recyclerView, dx, dy);
-                /*int totalCount = mLinearLayoutManager.getItemCount();
-                int lastVisible = mLinearLayoutManager.findLastVisibleItemPosition();
-                // 列表可见项只剩下4项并且向下滚动时加载更多
-                Log.d(TAG, "totalCount: " + totalCount + ", lastVisible: "+ lastVisible);
-                if(totalCount-lastVisible >= 4 && dy > 0){
-                    fetchNews(true);
-                }*/
+            public int getFooterViewType(int defaultNoFooterViewType) {
+                return -1;
+            }
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                Log.d(TAG, "onLoadMore");
+                fetchNews(true);
             }
         });
 
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             newsService.fetchLatestNews().enqueue(new Callback<News4List>() {
                 @Override
                 public void onResponse(Call<News4List> call, Response<News4List> response) {
-                    mNewsAdapter = null;
                     parseData(response, false);
                 }
 
@@ -134,11 +134,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             mNewsDate = DateUtil.parseDate(news4List.getDate());
-            if(null == mNewsAdapter){
+
+            if(isHistory){
+                mNewsAdapter.addNewses(news4List.getStories(), news4List.getDate());
+            }else{
                 mNewsAdapter = new NewsAdapter(MainActivity.this, news4List, news4List.getDate());
                 mNewsListView.setAdapter(mNewsAdapter);
-            }else{
-                mNewsAdapter.addNewses(news4List.getStories(), news4List.getDate());
             }
 
             mNewsSwipeRefresh.setRefreshing(false);

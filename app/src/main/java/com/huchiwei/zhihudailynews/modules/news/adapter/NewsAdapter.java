@@ -153,6 +153,14 @@ public class NewsAdapter extends RecyclerView.Adapter {
 
 
     /**
+     * 刷新新闻
+     */
+    public void refreshNews(){
+        this.mNewses.clear();
+        this.notifyDataSetChanged();
+    }
+
+    /**
      * 添加新闻列表
      * @param newses
      */
@@ -160,13 +168,13 @@ public class NewsAdapter extends RecyclerView.Adapter {
         if(null == newses || newses.size() == 0)
             return;
 
-        int orgSize = this.mNewses.size();
+        int orgSize = this.getItemCount();
 
         List<News> newsList = parseNews(newses, newsDate);
         this.mNewses.addAll(newsList);
 
         // 通知数据变化
-        this.notifyItemRangeInserted(orgSize, newses.size());
+        this.notifyItemRangeInserted(orgSize, this.mNewses.size() -1);
     }
 
     // ==================================================================
