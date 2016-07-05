@@ -7,10 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
-import com.huchiwei.zhihudailynews.core.support.RecyclerLoadMoreListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;
 import com.huchiwei.zhihudailynews.modules.news.adapter.NewsAdapter;
@@ -28,15 +28,17 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    @BindView(R.id.news_recycler_view)
-    RecyclerView mNewsListView;
-
     @BindView(R.id.news_swipe_refresh)
     SwipeRefreshLayout mNewsSwipeRefresh;
 
-    private NewsAdapter mNewsAdapter;
-    private Date mNewsDate = new Date();
+    @BindView(R.id.news_recycler_view)
+    RecyclerView mNewsListView;
+
     private LinearLayoutManager mLinearLayoutManager;
+
+    private NewsAdapter mNewsAdapter = null;
+    private Date mNewsDate = new Date();
+    private int mLastVisibleItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +52,19 @@ public class MainActivity extends AppCompatActivity {
         mLinearLayoutManager = new LinearLayoutManager(this);
         mNewsListView.setLayoutManager(mLinearLayoutManager);
 
+        mNewsAdapter = new NewsAdapter(this);
+        mNewsListView.setAdapter(mNewsAdapter);
+
         // 点击事件
         RecyclerItemClickListener itemClickListener = new RecyclerItemClickListener(mNewsListView) {
             @Override
             public void onItemClick(RecyclerView.ViewHolder holder) {
-                NewsAdapter.ViewNormalHolder viewNormalHolder = (NewsAdapter.ViewNormalHolder) holder;
-                Intent detailIntent = new Intent(MainActivity.this, NewsDetailActivity.class);
-                detailIntent.putExtra("newsId", viewNormalHolder.getNewsId());
-                startActivity(detailIntent);
+                if(holder instanceof  NewsAdapter.ViewNormalHolder){
+                    NewsAdapter.ViewNormalHolder viewNormalHolder = (NewsAdapter.ViewNormalHolder) holder;
+                    Intent detailIntent = new Intent(MainActivity.this, NewsDetailActivity.class);
+                    detailIntent.putExtra("newsId", viewNormalHolder.getNewsId());
+                    startActivity(detailIntent);
+                }
             }
         };
         mNewsListView.addOnItemTouchListener(itemClickListener);
@@ -72,21 +79,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 上拉加载更多
-        mNewsListView.addOnScrollListener(new RecyclerLoadMoreListener(mLinearLayoutManager) {
+        mNewsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public int getFooterViewType(int defaultNoFooterViewType) {
-                return -1;
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && mLastVisibleItem + 1 == mNewsAdapter.getItemCount()) {
+                    //handler.sendEmptyMessageDelayed(1, 3000);
+                    Log.d(TAG, "onScrollStateChanged: Load More");
+                    fetchNews(true);
+                }
             }
 
             @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                Log.d(TAG, "onLoadMore");
-                fetchNews(true);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                mLastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
             }
+
         });
-
-        //if(null != getSupportActionBar())
-        //    getSupportActionBar().setTitle("今日热文");
 
         // 拉取新闻
         this.fetchNews(false);
@@ -104,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<News4List> call, Throwable t) {
+                    mNewsSwipeRefresh.setRefreshing(false);
+                    Toast.makeText(MainActivity.this, "消息获取失败", Toast.LENGTH_SHORT);
                     Log.e(TAG, "onFailure: 获取最新的消息出错了", t);
                 }
             });
@@ -117,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<News4List> call, Throwable t) {
+                    mNewsSwipeRefresh.setRefreshing(false);
+                    Toast.makeText(MainActivity.this, "消息获取失败", Toast.LENGTH_SHORT);
                     Log.e(TAG, "onFailure: 获取消息出错了", t);
                 }
             });
@@ -134,13 +148,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             mNewsDate = DateUtil.parseDate(news4List.getDate());
-
-            if(isHistory){
-                mNewsAdapter.addNewses(news4List.getStories(), news4List.getDate());
-            }else{
-                mNewsAdapter = new NewsAdapter(MainActivity.this, news4List, news4List.getDate());
-                mNewsListView.setAdapter(mNewsAdapter);
-            }
+            mNewsAdapter.addNewses(news4List, true);
 
             mNewsSwipeRefresh.setRefreshing(false);
         }else{
