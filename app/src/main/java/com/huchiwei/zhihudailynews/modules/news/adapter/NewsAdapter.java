@@ -62,7 +62,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_news_list_banner, parent, false);
             return new ViewBannerHolder(view, this.mTopNewses);
         }else if(viewType == VT_FOOTER){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.common_load_more, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_load_more, parent, false);
             return new ViewFooterHolder(view);
         }else{
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_news_list, parent, false);
@@ -176,6 +176,18 @@ public class NewsAdapter extends RecyclerView.Adapter {
         this.notifyDataSetChanged();
     }
 
+    /**
+     * 获取屏幕上第一个可见的元素
+     * @param position
+     * @return
+     */
+    public News getFirstVisibleItem(int position){
+        if(position == 0 || position+1 >= this.getItemCount())
+            return null;
+
+        return this.mNewses.get(position);
+    }
+
     // ==================================================================
     // private methods ==================================================
     public void updateViewHolder(ViewNormalHolder viewNormalHolder, News news, int position){
@@ -214,9 +226,9 @@ public class NewsAdapter extends RecyclerView.Adapter {
         }else if(DateUtil.isYesterday(groupDate)){
             date = "昨日热闻";
         }else if(DateUtil.year(groupDate) != DateUtil.year(new Date())){
-            date = DateUtil.format(groupDate, "yyyy年MM月dd日");
+            date = DateUtil.format(groupDate, "yyyy年MM月dd日") +"  "+ DateUtil.format2Week(groupDate);
         }else{
-            date = DateUtil.format(groupDate, "MM月dd日");
+            date = DateUtil.format(groupDate, "MM月dd日") +"  "+ DateUtil.format2Week(groupDate);
         }
 
         List<News> newsList = new ArrayList<>();

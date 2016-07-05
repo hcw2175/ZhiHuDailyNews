@@ -3,7 +3,9 @@ package com.huchiwei.zhihudailynews.modules.news.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huchiwei.zhihudailynews.R;
+import com.huchiwei.zhihudailynews.core.base.BaseActivity;
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
@@ -31,8 +34,11 @@ import retrofit2.Response;
 public class NewsDetailActivity extends AppCompatActivity {
     private static final String TAG = "NewsDetailActivity";
 
-    @BindView(R.id.nd_title)
-    TextView mNewsTitle;
+    @BindView(R.id.nd_detail_toolbar)
+    Toolbar mToolbar;
+
+    @BindView(R.id.nd_collapsingToolbarLayout)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     @BindView(R.id.nd_image_source)
     TextView mImageSource;
@@ -49,7 +55,11 @@ public class NewsDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
+
         ButterKnife.bind(this);
+
+        //mToolbar.setNavigationIcon();
+        setSupportActionBar(mToolbar);
 
         // 禁止JS
         mBody.getSettings().setJavaScriptEnabled(false);
@@ -75,9 +85,8 @@ public class NewsDetailActivity extends AppCompatActivity {
                     mNews = response.body();
                     Log.d(TAG, "onResponse: " + mNews.getTitle());
 
-                    mNewsTitle.setText(mNews.getTitle());
+                    mCollapsingToolbarLayout.setTitle(mNews.getTitle());
                     mImageSource.setText(mNews.getImage_source());
-
                     ImageUtil.displayImage(NewsDetailActivity.this, mNews.getImage(), mCoverImg);
 
                     String html = mNews.getBody();

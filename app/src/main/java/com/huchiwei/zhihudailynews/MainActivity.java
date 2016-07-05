@@ -6,15 +6,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.huchiwei.zhihudailynews.core.base.BaseActivity;
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;
 import com.huchiwei.zhihudailynews.modules.news.adapter.NewsAdapter;
 import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
+import com.huchiwei.zhihudailynews.modules.news.entity.News;
 import com.huchiwei.zhihudailynews.modules.news.entity.News4List;
 
 import java.util.Date;
@@ -25,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
 
     @BindView(R.id.news_swipe_refresh)
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private NewsAdapter mNewsAdapter = null;
     private Date mNewsDate = new Date();
+
     private int mLastVisibleItem;
 
     @Override
@@ -94,8 +98,12 @@ public class MainActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 mLastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
-            }
 
+                News news = mNewsAdapter.getFirstVisibleItem(mLinearLayoutManager.findFirstCompletelyVisibleItemPosition());
+                if(null != news){
+                    getSupportActionBar().setTitle(news.getPublishDate());
+                }
+            }
         });
 
         // 拉取新闻
