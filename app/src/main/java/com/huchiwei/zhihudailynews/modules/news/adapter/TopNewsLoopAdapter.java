@@ -1,26 +1,31 @@
 package com.huchiwei.zhihudailynews.modules.news.adapter;
 
+import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.huchiwei.zhihudailynews.MainActivity;
+import com.huchiwei.zhihudailynews.R;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
+import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;
 import com.huchiwei.zhihudailynews.modules.news.entity.News;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.adapter.LoopPagerAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 置顶新闻适配器
+ * 新闻推荐消息轮播Adapter
  *
  * @author huchiwei
  * @version 1.0.0
  */
-public class TopNewsLoopAdapter extends LoopPagerAdapter{
+public class TopNewsLoopAdapter extends LoopPagerAdapter {
 
-    private List<String> topImages;
+    private List<News> mTopNews;
 
     public TopNewsLoopAdapter(RollPagerView viewPager) {
         super(viewPager);
@@ -28,30 +33,33 @@ public class TopNewsLoopAdapter extends LoopPagerAdapter{
 
     public TopNewsLoopAdapter(RollPagerView viewPager, List<News> topNews){
         super(viewPager);
-
-        topImages = new ArrayList<>();
-        if(topNews.size() > 0){
-            for(News news : topNews){
-                topImages.add(news.getImage());
-            }
-        }
+        this.mTopNews = topNews;
     }
 
     @Override
     public View getView(ViewGroup container, int position) {
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.adapter_news_list_banner_view, container, false);
 
-        // 图片
-        ImageView imageView = new ImageView(container.getContext());
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setLayoutParams(layoutParams);
-        ImageUtil.displayImage(container.getContext(), this.topImages.get(position), imageView);
+        final News news = this.mTopNews.get(position);
+        ImageView imageView = (ImageView)view.findViewById(R.id.news_banner_image);
+        ImageUtil.displayImage(container.getContext(), news.getImage(), imageView);
 
-        return imageView;
+        TextView textView = (TextView)view.findViewById(R.id.news_banner_title);
+        textView.setText(news.getTitle());
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), NewsDetailActivity.class);
+                intent.putExtra("newsId", news.getId());
+                v.getContext().startActivities(new Intent[]{intent});
+            }
+        });
+        return view;
     }
 
     @Override
     protected int getRealCount() {
-        return null==this.topImages ? 0 : this.topImages.size();
+        return null==this.mTopNews ? 0 : this.mTopNews.size();
     }
 }

@@ -19,3 +19,11 @@ _练习项目，不接受合并请求，敬请原谅！_
 * 新闻详情查看- - 
 
 ## 预览图
+
+
+## 更新日志
+V1.0.0
+> * 首页列表卡片式布局，支持SwipeRefreshLayout下拉刷新，RecylcerView上拉加载历史消息
+> * 首页图片轮播使用[RollViewPager](https://github.com/Jude95/RollViewPager)，支持标题显示、点击查看详情
+> * 滚动并设置新闻日期到标题栏
+> 
