@@ -2,4 +2,6 @@
     <string name="app_name">知乎新闻</string>
     <string name="news_cover_image">知乎新闻图片</string>
     <string name="load_more">加载更多</string>
+
+    <string name="launcher_subtitle">每天三次，每次7分钟</string>
 </resources>

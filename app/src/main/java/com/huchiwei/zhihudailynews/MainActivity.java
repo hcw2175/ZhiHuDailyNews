@@ -115,6 +115,20 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
+    /**
+     * 退到桌面重新打开，不再显示Launcher Screen
+     */
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
+    }
+
+    // ======================================================================================
+    // fetch news methods ===================================================================
     private void fetchNews(final boolean isHistory){
         NewsService newsService = RetrofitHelper.createApi(this, NewsService.class);
 
