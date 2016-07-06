@@ -110,6 +110,11 @@ public class MainActivity extends BaseActivity {
         this.fetchNews(false);
     }
 
+    @Override
+    protected boolean showBackButton() {
+        return false;
+    }
+
     private void fetchNews(final boolean isHistory){
         NewsService newsService = RetrofitHelper.createApi(this, NewsService.class);
 

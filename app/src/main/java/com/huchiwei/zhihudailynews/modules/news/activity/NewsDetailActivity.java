@@ -31,20 +31,17 @@ import retrofit2.Response;
  * @author huchiwei
  * @version 1.0.0
  */
-public class NewsDetailActivity extends AppCompatActivity {
+public class NewsDetailActivity extends BaseActivity {
     private static final String TAG = "NewsDetailActivity";
-
-    @BindView(R.id.nd_detail_toolbar)
-    Toolbar mToolbar;
-
-    @BindView(R.id.nd_collapsingToolbarLayout)
-    CollapsingToolbarLayout mCollapsingToolbarLayout;
-
-    @BindView(R.id.nd_image_source)
-    TextView mImageSource;
 
     @BindView(R.id.nd_coverImg)
     ImageView mCoverImg;
+
+    @BindView(R.id.nd_title)
+    TextView mTitle;
+
+    @BindView(R.id.nd_image_source)
+    TextView mImageSource;
 
     @BindView(R.id.nd_body)
     WebView mBody;
@@ -55,11 +52,11 @@ public class NewsDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-
         ButterKnife.bind(this);
 
-        //mToolbar.setNavigationIcon();
-        setSupportActionBar(mToolbar);
+        if(null != getSupportActionBar()){
+            getSupportActionBar().setTitle("");
+        }
 
         // 禁止JS
         mBody.getSettings().setJavaScriptEnabled(false);
@@ -85,7 +82,7 @@ public class NewsDetailActivity extends AppCompatActivity {
                     mNews = response.body();
                     Log.d(TAG, "onResponse: " + mNews.getTitle());
 
-                    mCollapsingToolbarLayout.setTitle(mNews.getTitle());
+                    mTitle.setText(mNews.getTitle());
                     mImageSource.setText(mNews.getImage_source());
                     ImageUtil.displayImage(NewsDetailActivity.this, mNews.getImage(), mCoverImg);
 
@@ -95,9 +92,7 @@ public class NewsDetailActivity extends AppCompatActivity {
                     if(null != mNews.getCss()){
                         html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + mNews.getCss().get(0) +"\" />" + html;
                     }
-                    mBody.loadData(html, "text/html; charset=UTF-8", null);
-                    // mBody.setText(Html.fromHtml(mNews.getBody()));
-                    //mBody.setText(mNews.getBody()));
+                    mBody.loadData(html, "text/html; charset=utf-8" , "utf-8");
                 }
             }
 
@@ -106,5 +101,10 @@ public class NewsDetailActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure: 获取新闻消息失败", t);
             }
         });
+    }
+
+    @Override
+    protected boolean showBackButton() {
+        return true;
     }
 }

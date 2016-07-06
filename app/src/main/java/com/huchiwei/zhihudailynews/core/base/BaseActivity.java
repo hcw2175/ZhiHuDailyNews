@@ -17,8 +17,10 @@ import com.huchiwei.zhihudailynews.R;
  * @author huchiwei
  * @version 1.0.0
  */
-public class BaseActivity extends AppCompatActivity{
+public abstract class BaseActivity extends AppCompatActivity{
     private LinearLayout rootLayout;
+
+    private Toolbar mToolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +59,25 @@ public class BaseActivity extends AppCompatActivity{
     }
 
     private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.widget_toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+        mToolBar = (Toolbar) findViewById(R.id.widget_toolbar);
+        if (mToolBar != null) {
+            setSupportActionBar(mToolBar);
+
+            if(this.showBackButton() && null != getSupportActionBar()){
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onBackPressed();
+                    }
+                });
+            }
         }
     }
+
+    /**
+     * 是否需要显示返回按钮
+     * @return true表示需要,否则不需要
+     */
+    protected abstract boolean showBackButton();
 }
