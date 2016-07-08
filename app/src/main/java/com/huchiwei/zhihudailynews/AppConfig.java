@@ -1,4 +1,4 @@
-package com.huchiwei.zhihudailynews.core.config;
+package com.huchiwei.zhihudailynews;
 
 /**
  * APP常量配置
