@@ -1,4 +1,4 @@
-package com.huchiwei.zhihudailynews;
+package com.huchiwei.zhihudailynews.core;
 
 /**
  * 常量定义

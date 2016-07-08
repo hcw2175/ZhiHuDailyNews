@@ -7,8 +7,8 @@ package com.huchiwei.zhihudailynews.core.helper;
 
 import android.content.Context;
 
-import com.huchiwei.zhihudailynews.AppConfig;
-import com.huchiwei.zhihudailynews.Constants;
+import com.huchiwei.zhihudailynews.BuildConfig;
+import com.huchiwei.zhihudailynews.core.Constants;
 import com.huchiwei.zhihudailynews.core.utils.AppUtil;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 
@@ -46,7 +46,7 @@ public class RetrofitHelper {
             synchronized (ImageUtil.class){
                 if(null == retrofitInstance){ // 双重检验锁,仅第一次调用时实例化
                     retrofitInstance = new Retrofit.Builder()
-                            .baseUrl(AppConfig.getBaseUrl())     // baseUrl总是以/结束，@URL不要以/开头
+                            .baseUrl(BuildConfig.API_SERVER_URL)     // baseUrl总是以/结束，@URL不要以/开头
                             .client(buildOKHttpClient())
                             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                             .addConverterFactory(GsonConverterFactory.create())

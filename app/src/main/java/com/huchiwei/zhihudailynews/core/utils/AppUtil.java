@@ -4,8 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.huchiwei.zhihudailynews.BuildConfig;
 import com.huchiwei.zhihudailynews.LaunchApplication;
-import com.huchiwei.zhihudailynews.AppConfig;
 
 /**
  * App工具类
@@ -37,7 +37,7 @@ public class AppUtil {
      * @return 返回true则表示处于开发模式，否则非开发模式
      */
     public static boolean isDev(){
-        return AppConfig.APP_MODEL.equalsIgnoreCase("dev");
+        return BuildConfig.APP_MODEL.equalsIgnoreCase("dev");
     }
 
     /**

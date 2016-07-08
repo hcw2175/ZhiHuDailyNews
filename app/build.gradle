@@ -11,6 +11,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        // APP模式: dev|stage|product
+        buildConfigField 'String','APP_MODEL','"dev"'
+
+        // API URL
+        buildConfigField 'String','API_SERVER_URL','"http://news-at.zhihu.com/api/4/"'
     }
     buildTypes {
         release {
