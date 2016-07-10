@@ -113,12 +113,11 @@ public class RetrofitHelper {
      * @return OkHttpClient
      */
     private static OkHttpClient buildOKHttpClient(){
-        // http请求日志拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         return new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
+                .addInterceptor(loggingInterceptor)                       // http请求日志拦截器
                 .addInterceptor(buildCacheInterceptor())                  // 设置缓存
                 .cache(getCache())
                 .retryOnConnectionFailure(true)                           // 自动重连

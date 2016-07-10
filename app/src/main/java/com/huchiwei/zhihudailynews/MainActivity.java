@@ -3,14 +3,12 @@ package com.huchiwei.zhihudailynews;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.huchiwei.zhihudailynews.core.base.BaseActivity;
+import com.huchiwei.zhihudailynews.core.base.ToolbarActivity;
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
@@ -24,14 +22,11 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends ToolbarActivity {
     private static final String TAG = "MainActivity";
 
     @BindView(R.id.news_swipe_refresh)

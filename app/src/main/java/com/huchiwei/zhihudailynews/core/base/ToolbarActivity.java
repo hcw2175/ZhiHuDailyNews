@@ -2,7 +2,6 @@ package com.huchiwei.zhihudailynews.core.base;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import com.huchiwei.zhihudailynews.R;
  * @author huchiwei
  * @version 1.0.0
  */
-public abstract class BaseActivity extends AppCompatActivity{
+public abstract class ToolbarActivity extends AbstractActivity{
     private LinearLayout rootLayout;
 
     private Toolbar mToolBar;

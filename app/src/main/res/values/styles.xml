@@ -1,6 +1,7 @@
 <resources>
     <!-- 使用ToolBar代替ActionBar -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
 
     <!-- 启动画面 -->
     <style name="LauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
