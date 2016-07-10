@@ -16,6 +16,7 @@ import com.huchiwei.zhihudailynews.R;
 import com.huchiwei.zhihudailynews.core.base.BaseActivity;
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
+import com.huchiwei.zhihudailynews.core.utils.ToastUtil;
 import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
 import com.huchiwei.zhihudailynews.modules.news.entity.News;
 
@@ -24,6 +25,9 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 新闻明细Activity
@@ -45,8 +49,6 @@ public class NewsDetailActivity extends BaseActivity {
 
     @BindView(R.id.nd_body)
     WebView mBody;
-
-    private News mNews = new News();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,33 +76,69 @@ public class NewsDetailActivity extends BaseActivity {
         Intent intent = this.getIntent();
         Log.d(TAG, "onCreate: " + intent.getIntExtra("newsId", -1));
 
-        NewsService newsService = RetrofitHelper.createApi(this, NewsService.class);
-        newsService.loadNews(intent.getIntExtra("newsId", -1)).enqueue(new Callback<News>() {
-            @Override
-            public void onResponse(Call<News> call, Response<News> response) {
-                if(response.isSuccessful()){
-                    mNews = response.body();
-                    Log.d(TAG, "onResponse: " + mNews.getTitle());
+        /*RetrofitHelper
+                .createApi(NewsService.class)
+                .loadNews(intent.getIntExtra("newsId", -1)).enqueue(new Callback<News>() {
+                    @Override
+                    public void onResponse(Call<News> call, Response<News> response) {
+                        if(response.isSuccessful()){
+                            mNews = response.body();
+                            Log.d(TAG, "onResponse: " + mNews.getTitle());
 
-                    mTitle.setText(mNews.getTitle());
-                    mImageSource.setText(mNews.getImage_source());
-                    ImageUtil.displayImage(NewsDetailActivity.this, mNews.getImage(), mCoverImg);
+                            mTitle.setText(mNews.getTitle());
+                            mImageSource.setText(mNews.getImage_source());
+                            ImageUtil.displayImage(NewsDetailActivity.this, mNews.getImage(), mCoverImg);
 
-                    String html = mNews.getBody();
-                    // 替换头部图片空白占位html
-                    html = html.replace("<div class=\"img-place-holder\">", "").replace("<div class=\"headline\">", "");
-                    if(null != mNews.getCss()){
-                        html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + mNews.getCss().get(0) +"\" />" + html;
+                            String html = mNews.getBody();
+                            // 替换头部图片空白占位html
+                            html = html.replace("<div class=\"img-place-holder\">", "").replace("<div class=\"headline\">", "");
+                            if(null != mNews.getCss()){
+                                html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + mNews.getCss().get(0) +"\" />" + html;
+                            }
+                            mBody.loadData(html, "text/html; charset=utf-8" , "utf-8");
+                        }
                     }
-                    mBody.loadData(html, "text/html; charset=utf-8" , "utf-8");
-                }
-            }
 
-            @Override
-            public void onFailure(Call<News> call, Throwable t) {
-                Log.e(TAG, "onFailure: 获取新闻消息失败", t);
-            }
-        });
+                    @Override
+                    public void onFailure(Call<News> call, Throwable t) {
+                        Log.e(TAG, "onFailure: 获取新闻消息失败", t);
+                    }
+                });*/
+        RetrofitHelper.createApi(NewsService.class)
+                .loadNews(intent.getIntExtra("newsId", -1))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<News>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ToastUtil.show("新闻消息详情获取失败");
+                        Log.e(TAG, "onError: 获取新闻消息失败", e);
+                    }
+
+                    @Override
+                    public void onNext(News news) {
+                        if(null == news){
+                            ToastUtil.show("无法获取新闻详情");
+                            return;
+                        }
+
+                        Log.d(TAG, "onResponse: " + news.getTitle());
+                        mTitle.setText(news.getTitle());
+                        mImageSource.setText(news.getImage_source());
+                        ImageUtil.displayImage(NewsDetailActivity.this, news.getImage(), mCoverImg);
+
+                        String html = news.getBody();
+                        // 替换头部图片空白占位html
+                        html = html.replace("<div class=\"img-place-holder\">", "").replace("<div class=\"headline\">", "");
+                        if(null != news.getCss()){
+                            html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + news.getCss().get(0) +"\" />" + html;
+                        }
+                        mBody.loadData(html, "text/html; charset=utf-8" , "utf-8");
+                    }
+                });
     }
 
     @Override

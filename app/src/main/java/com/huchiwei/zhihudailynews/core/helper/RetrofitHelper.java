@@ -115,7 +115,7 @@ public class RetrofitHelper {
     private static OkHttpClient buildOKHttpClient(){
         // http请求日志拦截器
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
         return new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
@@ -129,11 +129,10 @@ public class RetrofitHelper {
 
     /**
      * 创建Retrofit请求Api
-     * @param context 上下文
      * @param clazz   Retrofit Api接口
      * @return api实例
      */
-    public static <T> T createApi(Context context, Class<T> clazz){
+    public static <T> T createApi(Class<T> clazz){
         return getInstance().create(clazz);
     }
 }

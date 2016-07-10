@@ -8,4 +8,5 @@ package com.huchiwei.zhihudailynews.core;
  */
 public class Constants {
     public static final String CACHE = "zhihudailynews";
+    public static final String CACHE_IMAGES = "zhihudailynews_images";
 }

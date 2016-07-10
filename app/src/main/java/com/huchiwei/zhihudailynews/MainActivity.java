@@ -27,6 +27,9 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -100,7 +103,7 @@ public class MainActivity extends BaseActivity {
                 mLastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
 
                 News news = mNewsAdapter.getFirstVisibleItem(mLinearLayoutManager.findFirstCompletelyVisibleItemPosition());
-                if(null != news){
+                if(null != news && null != getSupportActionBar()){
                     getSupportActionBar().setTitle(news.getPublishDate());
                 }
             }
@@ -130,56 +133,49 @@ public class MainActivity extends BaseActivity {
     // ======================================================================================
     // fetch news methods ===================================================================
     private void fetchNews(final boolean isHistory){
-        NewsService newsService = RetrofitHelper.createApi(this, NewsService.class);
+        NewsService newsService = RetrofitHelper.createApi(NewsService.class);
 
         if(!isHistory){
-            newsService.fetchLatestNews().enqueue(new Callback<News4List>() {
-                @Override
-                public void onResponse(Call<News4List> call, Response<News4List> response) {
-                    parseData(response, false);
-                }
-
-                @Override
-                public void onFailure(Call<News4List> call, Throwable t) {
-                    mNewsSwipeRefresh.setRefreshing(false);
-                    Toast.makeText(MainActivity.this, "消息获取失败", Toast.LENGTH_SHORT);
-                    Log.e(TAG, "onFailure: 获取最新的消息出错了", t);
-                }
-            });
+            newsService
+                    .fetchLatestNews()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onNext(), onFail());
         }else{
             String newsDate = DateUtil.format(this.mNewsDate, "yyyyMMdd");
-            newsService.fetchHistoryNews(newsDate).enqueue(new Callback<News4List>() {
-                @Override
-                public void onResponse(Call<News4List> call, Response<News4List> response) {
-                    parseData(response, true);
-                }
-
-                @Override
-                public void onFailure(Call<News4List> call, Throwable t) {
-                    mNewsSwipeRefresh.setRefreshing(false);
-                    Toast.makeText(MainActivity.this, "消息获取失败", Toast.LENGTH_SHORT);
-                    Log.e(TAG, "onFailure: 获取消息出错了", t);
-                }
-            });
+            newsService
+                    .fetchHistoryNews(newsDate)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(onNext(), onFail());
         }
     }
 
-    private void parseData(Response<News4List> response, boolean isHistory){
-        if(response.isSuccessful()){
-            News4List news4List = response.body();
-            Log.d(TAG, "新闻日期: " + news4List.getDate());
-            Log.d(TAG, "当天新闻" + news4List.getStories().size() + "条");
+    private Action1<News4List> onNext(){
+        return new Action1<News4List>() {
+            @Override
+            public void call(News4List news4List) {
+                Log.d(TAG, "新闻日期: " + news4List.getDate());
+                Log.d(TAG, "当天新闻" + news4List.getStories().size() + "条");
+                if(null != news4List.getTop_stories()){
+                    Log.d(TAG, "当天推荐" + news4List.getTop_stories().size() + "条");
+                }
 
-            if(!isHistory && null != news4List.getTop_stories()){
-                Log.d(TAG, "当天推荐" + news4List.getTop_stories().size() + "条");
+                mNewsDate = DateUtil.parseDate(news4List.getDate());
+                mNewsAdapter.addNewses(news4List, true);
+                mNewsSwipeRefresh.setRefreshing(false);
             }
+        };
+    }
 
-            mNewsDate = DateUtil.parseDate(news4List.getDate());
-            mNewsAdapter.addNewses(news4List, true);
-
-            mNewsSwipeRefresh.setRefreshing(false);
-        }else{
-            Log.e(TAG, "新闻消息获取失败: " + response.message(), null);
-        }
+    private Action1<Throwable> onFail(){
+        return new Action1<Throwable>() {
+            @Override
+            public void call(Throwable t) {
+                mNewsSwipeRefresh.setRefreshing(false);
+                Toast.makeText(MainActivity.this, "消息获取失败", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: 获取最新的消息出错了", t);
+            }
+        };
     }
 }
