@@ -1,4 +1,4 @@
-package com.huchiwei.zhihudailynews.core.base;
+package com.huchiwei.zhihudailynews.common.ui;
 
 import android.os.Build;
 import android.os.Bundle;
