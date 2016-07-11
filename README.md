@@ -12,10 +12,17 @@ _练习项目，不接受合并请求，敬请原谅！_
 * Google原生SwipeRefreshLayout下拉刷新，更显简洁
 * Retrofit2 + OKHttp作为网络请求库，实现数据缓存，好用强大，网络请求不二之选
 * 使用universal-image-loader实现图片懒加载、缓存，流量能省则省
-
+* 加入Rxjava异步请求库，远离回调地狱
 
 ## 预览图
 
+![首页大图](http://oa5k1q7cb.bkt.clouddn.com/ZhihuDailyNews_Home.png?imageView2/0/w/500)
+
+
+![按日期分组](http://oa5k1q7cb.bkt.clouddn.com/ZhihuDailyNews_DateGroup.png?imageView2/0/w/500)
+
+
+![详情](http://oa5k1q7cb.bkt.clouddn.com/ZhihuDailyNews_Detail.png?imageView2/0/w/500)
 
 ## 更新日志
 > * 首页列表卡片式布局，支持SwipeRefreshLayout下拉刷新，RecylcerView上拉加载历史消息

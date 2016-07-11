@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.huchiwei.zhihudailynews.core.base.ToolbarActivity;
+import com.huchiwei.zhihudailynews.common.ui.ToolbarActivity;
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.support.RecyclerItemClickListener;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
