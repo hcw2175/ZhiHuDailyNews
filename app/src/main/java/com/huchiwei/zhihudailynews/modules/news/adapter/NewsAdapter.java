@@ -194,7 +194,7 @@ public class NewsAdapter extends RecyclerView.Adapter {
         viewNormalHolder.mNewsTitle.setText(news.getTitle());
         viewNormalHolder.mNewsDate.setText(news.getPublishDate());
         if(!TextUtils.isEmpty(news.getListCoverImage())){
-            ImageUtil.displayImage(mContext, news.getListCoverImage(), viewNormalHolder.mNewsCoverImage);
+            ImageUtil.displayImage(mContext, viewNormalHolder.mNewsCoverImage, news.getListCoverImage());
         }
 
         if(position == 1){

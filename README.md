@@ -11,8 +11,8 @@ _练习项目，不接受合并请求，敬请原谅！_
 * RecylcerView与CardView相结合，搭配出赏心悦目的列表卡片式布局，还可以上拉加载更多哦
 * Google原生SwipeRefreshLayout下拉刷新，更显简洁
 * Retrofit2 + OKHttp作为网络请求库，实现数据缓存，好用强大，网络请求不二之选
-* 使用universal-image-loader实现图片懒加载、缓存，流量能省则省
 * 加入Rxjava异步请求库，远离回调地狱
+* 使用Google推荐的Glide图片库进行图片加载,速度是杠杆的
 
 ## 预览图
 
@@ -25,6 +25,8 @@ _练习项目，不接受合并请求，敬请原谅！_
 ![详情](http://oa5k1q7cb.bkt.clouddn.com/ZhihuDailyNews_Detail.png?imageView2/0/w/500)
 
 ## 更新日志
+> * 使用Glide替换universal-image-loader
+
 > * 首页列表卡片式布局，支持SwipeRefreshLayout下拉刷新，RecylcerView上拉加载历史消息
 > * 首页图片轮播使用[RollViewPager](https://github.com/Jude95/RollViewPager)，支持标题显示、点击查看详情
 > * 滚动并设置新闻日期到标题栏

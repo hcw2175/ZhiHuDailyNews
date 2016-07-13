@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 android {
+    signingConfigs{
+        release{
+            keyAlias 'hucw'
+            keyPassword 'hucw0259'
+            storeFile file('/Users/xcmini/DevTools/hucw_sign.jks')
+            storePassword 'hucw0259'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     defaultConfig {
@@ -20,6 +28,7 @@ android {
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -61,6 +70,7 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.1.0'
 
     // 图片相关
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.jude:rollviewpager:1.3.2'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
 }

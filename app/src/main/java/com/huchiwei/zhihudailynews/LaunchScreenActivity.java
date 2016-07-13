@@ -62,10 +62,10 @@ public class LaunchScreenActivity extends AppCompatActivity {
                 mLauncherBackgroundSource.setVisibility(View.VISIBLE);
             }
 
-            ImageUtil.displayImage(LaunchScreenActivity.this, CacheUtil.getString("start_image"), mLauncherBackground);
+            ImageUtil.displayImage(LaunchScreenActivity.this, mLauncherBackground, CacheUtil.getString("start_image"));
         }else{
             // 显示默认图片
-            ImageUtil.displayImage(LaunchScreenActivity.this, "drawable://" + R.drawable.launcher_img, mLauncherBackground);
+            ImageUtil.displayImage(LaunchScreenActivity.this, mLauncherBackground, "drawable://" + R.drawable.launcher_img);
         }
 
         // 缓存启动图片数据

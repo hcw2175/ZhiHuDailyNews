@@ -42,7 +42,7 @@ public class TopNewsLoopAdapter extends LoopPagerAdapter {
 
         final News news = this.mTopNews.get(position);
         ImageView imageView = (ImageView)view.findViewById(R.id.news_banner_image);
-        ImageUtil.displayImage(container.getContext(), news.getImage(), imageView);
+        ImageUtil.displayImage(container.getContext(), imageView, news.getImage());
 
         TextView textView = (TextView)view.findViewById(R.id.news_banner_title);
         textView.setText(news.getTitle());

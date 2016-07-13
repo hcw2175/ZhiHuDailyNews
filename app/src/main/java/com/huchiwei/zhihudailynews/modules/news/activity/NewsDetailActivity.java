@@ -92,7 +92,7 @@ public class NewsDetailActivity extends ToolbarActivity {
                         Log.d(TAG, "onResponse: " + news.getTitle());
                         mTitle.setText(news.getTitle());
                         mImageSource.setText(news.getImage_source());
-                        ImageUtil.displayImage(NewsDetailActivity.this, news.getImage(), mCoverImg);
+                        ImageUtil.displayImage(NewsDetailActivity.this, mCoverImg, news.getImage());
 
                         String html = news.getBody();
                         // 替换头部图片空白占位html
