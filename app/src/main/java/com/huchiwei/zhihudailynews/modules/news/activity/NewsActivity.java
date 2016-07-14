@@ -118,12 +118,17 @@ public class NewsActivity extends ToolbarActivity implements NewsContract.View {
     public void onDataChanged(News4List news4List) {
         mNewsDate = DateUtil.parseDate(news4List.getDate());
         mNewsAdapter.addNewses(news4List, true);
-        mNewsListView.setRefreshing(false);
+        this.setRefreshing(false);
     }
 
     @Override
     public void onFetchFail() {
-        mNewsListView.setRefreshing(false);
+        this.setRefreshing(false);
         Toast.makeText(NewsActivity.this, "消息获取失败", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        mNewsListView.setRefreshing(refreshing);
     }
 }

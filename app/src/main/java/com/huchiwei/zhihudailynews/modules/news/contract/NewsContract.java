@@ -15,7 +15,6 @@ import java.util.Date;
 public interface NewsContract {
 
     interface Presenter extends BasePresenter{
-
         /**
          * 拉取最新新闻
          */
@@ -29,6 +28,8 @@ public interface NewsContract {
     }
 
     interface View extends BaseView<Presenter>{
+
+        void setRefreshing(boolean refreshing);
 
         void onDataChanged(News4List news4List);
 

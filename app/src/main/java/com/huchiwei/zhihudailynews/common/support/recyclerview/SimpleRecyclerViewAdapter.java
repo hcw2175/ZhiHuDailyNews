@@ -33,9 +33,6 @@ public abstract class SimpleRecyclerViewAdapter<T,VH extends RecyclerView.ViewHo
 
     private List<T> mData = new ArrayList<>();         // 数据源
 
-    private View mHeaderView;                          // header view
-    private View mFooterView;                          // footer view
-
     // =====================================================================
     // Constructor =========================================================
     public SimpleRecyclerViewAdapter(Context context) {

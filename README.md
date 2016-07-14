@@ -25,8 +25,15 @@ _练习项目，不接受合并请求，敬请原谅！_
 ![详情](http://oa5k1q7cb.bkt.clouddn.com/ZhihuDailyNews_Detail.png?imageView2/0/w/500)
 
 ## 更新日志
+2016.07.14
+> * 尝试加入MVP模式，解耦业务逻辑与UI操作，详见NewsContract
+> * RecyclerView二次封装，增加下拉刷新、加载更多事件监听
+> * RecyclerView Adapter二次封装，尽量精简代码，可添加Header、Footer
+
+2016.07.13
 > * 使用Glide替换universal-image-loader
 
+2016.07.10
 > * 首页列表卡片式布局，支持SwipeRefreshLayout下拉刷新，RecylcerView上拉加载历史消息
 > * 首页图片轮播使用[RollViewPager](https://github.com/Jude95/RollViewPager)，支持标题显示、点击查看详情
 > * 滚动并设置新闻日期到标题栏
