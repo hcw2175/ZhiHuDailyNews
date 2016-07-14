@@ -9,6 +9,7 @@ import com.huchiwei.zhihudailynews.core.utils.AppUtil;
  * @version 1.0.0
  */
 public class CacheUtil {
+    public static final String CACHE_FILE_NAME = "ZhihuDailyNews";
 
     // 声明为volatile,保证访问顺序
     private volatile static ACache mACache = null;

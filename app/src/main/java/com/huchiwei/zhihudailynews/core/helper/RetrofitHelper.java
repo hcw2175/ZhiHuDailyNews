@@ -5,10 +5,8 @@
  */
 package com.huchiwei.zhihudailynews.core.helper;
 
-import android.content.Context;
-
 import com.huchiwei.zhihudailynews.BuildConfig;
-import com.huchiwei.zhihudailynews.core.Constants;
+import com.huchiwei.zhihudailynews.core.cache.CacheUtil;
 import com.huchiwei.zhihudailynews.core.utils.AppUtil;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 
@@ -63,7 +61,7 @@ public class RetrofitHelper {
      */
     private static Cache getCache(){
         // 获取缓存目标
-        File cacheFile = new File(AppUtil.getContext().getExternalCacheDir(), Constants.CACHE);
+        File cacheFile = new File(AppUtil.getContext().getExternalCacheDir(), CacheUtil.CACHE_FILE_NAME);
         // 创建缓存对象,最大缓存50m
         return new Cache(cacheFile, 1024*1024*50);
     }

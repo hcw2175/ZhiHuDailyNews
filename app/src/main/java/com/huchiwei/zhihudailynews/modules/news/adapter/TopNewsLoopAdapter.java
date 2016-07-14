@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.huchiwei.zhihudailynews.MainActivity;
 import com.huchiwei.zhihudailynews.R;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 import com.huchiwei.zhihudailynews.modules.news.activity.NewsDetailActivity;

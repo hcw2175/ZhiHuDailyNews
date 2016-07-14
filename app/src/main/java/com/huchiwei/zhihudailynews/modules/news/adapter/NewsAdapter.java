@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.huchiwei.zhihudailynews.R;
+import com.huchiwei.zhihudailynews.common.support.recyclerview.SimpleRecyclerViewAdapter;
 import com.huchiwei.zhihudailynews.core.utils.DateUtil;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
 import com.huchiwei.zhihudailynews.modules.news.entity.News;
@@ -31,66 +32,13 @@ import butterknife.ButterKnife;
  * @author huchiwei
  * @version 1.0.0
  */
-public class NewsAdapter extends RecyclerView.Adapter {
-    private static final String TAG = "NewsAdapter";
+public class NewsAdapter extends SimpleRecyclerViewAdapter<News, RecyclerView.ViewHolder> {
 
-    private static final int VT_HEADER = 0;
-    private static final int VT_BODY = 1;
-    private static final int VT_FOOTER = 2;
-
-    private Context mContext;
-    private List<News> mNewses;
     private List<News> mTopNewses;
-
     private boolean mCanLoadMore;               // 是否允许加载更多
 
-    public NewsAdapter(Context context){
-        this.mContext = context;
-    }
-
-    /**
-     * 渲染具体的ViewHolder
-     *
-     * @param parent   所属容器
-     * @param viewType view类型,根据该类型渲染不同的viewHolder
-     * @return
-     */
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
-        if(viewType == VT_HEADER){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_news_list_banner, parent, false);
-            return new ViewBannerHolder(view, this.mTopNewses);
-        }else if(viewType == VT_FOOTER){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_load_more, parent, false);
-            return new ViewFooterHolder(view);
-        }else{
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_news_list, parent, false);
-            return new ViewNormalHolder(view);
-        }
-    }
-
-    /**
-     * 绑定数据
-     * @param holder
-     * @param position
-     */
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        News news = this.mNewses.get(position);
-        if(null != news && (holder instanceof ViewNormalHolder)){
-            ViewNormalHolder viewNormalHolder = (ViewNormalHolder)holder;
-            updateViewHolder(viewNormalHolder, news, position);
-        }
-    }
-
-    /**
-     * 获取数据数量
-     * @return 新闻数量
-     */
-    @Override
-    public int getItemCount() {
-        return mNewses == null ? 0 : mNewses.size();
+    public NewsAdapter(Context context) {
+        super(context);
     }
 
     @Override
@@ -102,52 +50,47 @@ public class NewsAdapter extends RecyclerView.Adapter {
         return VT_BODY;
     }
 
-    /**
-     * News Item View
-     */
-    public class ViewNormalHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.news_group_date) TextView mNewsDate;
-        @BindView(R.id.news_title) TextView mNewsTitle;
-        @BindView(R.id.news_cover_img) ImageView mNewsCoverImage;
-
-        private int newsId;
-
-        public ViewNormalHolder(View v) {
-            super(v);
-            ButterKnife.bind(this, v);
-        }
-
-        public int getNewsId() {
-            return newsId;
-        }
-        public void setNewsId(int newsId) {
-            this.newsId = newsId;
-        }
+    @Override
+    protected ViewNormalHolder getItemView(ViewGroup parent) {
+        View view = this.mLayoutInflater.inflate(R.layout.adapter_news_list, parent, false);;
+        return new ViewNormalHolder(view);
     }
 
-    /**
-     * Top News Banner View
-     */
-    public class ViewBannerHolder extends RecyclerView.ViewHolder{
-
-        @BindView(R.id.news_banner)
-        RollPagerView mNewsBanner;
-
-        public ViewBannerHolder(View v, List<News> topNewses) {
-            super(v);
-            ButterKnife.bind(this, v);
-
-            this.mNewsBanner.setHintView(new ColorPointHintView(v.getContext(), Color.YELLOW, Color.WHITE));
-            this.mNewsBanner.setAdapter(new TopNewsLoopAdapter(mNewsBanner, topNewses));
-        }
+    @Override
+    protected ViewBannerHolder getHeaderView(ViewGroup parent) {
+        View view = this.mLayoutInflater.inflate(R.layout.adapter_news_list_banner, parent, false);;
+        return new ViewBannerHolder(view, mTopNewses);
     }
 
-    /**
-     * Load More Footer View
-     */
-    public class ViewFooterHolder extends RecyclerView.ViewHolder {
-        public ViewFooterHolder(View v) {
-            super(v);
+    @Override
+    protected ViewFooterHolder getFooterView(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_load_more, parent, false);
+        return new ViewFooterHolder(view);
+    }
+
+    @Override
+    protected void bindViewData(RecyclerView.ViewHolder viewHolder, int position) {
+        News news = this.getDataItem(position);
+        if(null != news && (viewHolder instanceof ViewNormalHolder)){
+            ViewNormalHolder viewNormalHolder = (ViewNormalHolder)viewHolder;
+
+            viewNormalHolder.mNewsTitle.setText(news.getTitle());
+            viewNormalHolder.mNewsDate.setText(news.getPublishDate());
+            if(!TextUtils.isEmpty(news.getListCoverImage())){
+                ImageUtil.displayImage(mContext, viewNormalHolder.mNewsCoverImage, news.getListCoverImage());
+            }
+
+            if(position == 1){
+                viewNormalHolder.mNewsDate.setVisibility(View.VISIBLE);
+            } else {
+                News beforeNews = this.getDataItem(position-1);
+                if(!beforeNews.getPublishDate().equalsIgnoreCase(news.getPublishDate())){
+                    viewNormalHolder.mNewsDate.setVisibility(View.VISIBLE);
+                } else {
+                    viewNormalHolder.mNewsDate.setVisibility(View.GONE);
+                }
+            }
+            viewNormalHolder.setNewsId(news.getId());
         }
     }
 
@@ -166,55 +109,18 @@ public class NewsAdapter extends RecyclerView.Adapter {
         String newsDate = news4List.getDate();
         List<News> newsList = parseNews(newses, newsDate);
         if(DateUtil.isToday(DateUtil.parseDate(newsDate))){
-            this.mNewses =  newsList ;
+            this.updateData(newsList) ;
             this.mTopNewses = news4List.getTop_stories();
         }else{
-            this.mNewses.addAll(newsList);
+            this.addData(newsList);
         }
-
-        // 通知数据变化
-        this.notifyDataSetChanged();
-    }
-
-    /**
-     * 获取屏幕上第一个可见的元素
-     * @param position
-     * @return
-     */
-    public News getFirstVisibleItem(int position){
-        if(position == 0 || position+1 >= this.getItemCount())
-            return null;
-
-        return this.mNewses.get(position);
-    }
-
-    // ==================================================================
-    // private methods ==================================================
-    public void updateViewHolder(ViewNormalHolder viewNormalHolder, News news, int position){
-        viewNormalHolder.mNewsTitle.setText(news.getTitle());
-        viewNormalHolder.mNewsDate.setText(news.getPublishDate());
-        if(!TextUtils.isEmpty(news.getListCoverImage())){
-            ImageUtil.displayImage(mContext, viewNormalHolder.mNewsCoverImage, news.getListCoverImage());
-        }
-
-        if(position == 1){
-            viewNormalHolder.mNewsDate.setVisibility(View.VISIBLE);
-        } else {
-            News beforeNews = this.mNewses.get(position-1);
-            if(!beforeNews.getPublishDate().equalsIgnoreCase(news.getPublishDate())){
-                viewNormalHolder.mNewsDate.setVisibility(View.VISIBLE);
-            } else {
-                viewNormalHolder.mNewsDate.setVisibility(View.GONE);
-            }
-        }
-        viewNormalHolder.setNewsId(news.getId());
     }
 
     /**
      * 重新解析新闻，设置时间
      * @param newses 新闻列表
      * @param date   新闻事件
-     * @return
+     * @return List
      */
     private List<News> parseNews(List<News> newses, String date){
         if(null == newses || newses.size()==0)
@@ -237,5 +143,47 @@ public class NewsAdapter extends RecyclerView.Adapter {
             newsList.add(news);
         }
         return newsList;
+    }
+
+    // =====================================================================
+    // View Holders =========================================================
+    public class ViewNormalHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.news_group_date) TextView mNewsDate;
+        @BindView(R.id.news_title) TextView mNewsTitle;
+        @BindView(R.id.news_cover_img) ImageView mNewsCoverImage;
+
+        private int newsId;
+
+        ViewNormalHolder(View v) {
+            super(v);
+            ButterKnife.bind(this, v);
+        }
+
+        public int getNewsId() {
+            return newsId;
+        }
+        public void setNewsId(int newsId) {
+            this.newsId = newsId;
+        }
+    }
+
+    public class ViewBannerHolder extends RecyclerView.ViewHolder{
+
+        @BindView(R.id.news_banner)
+        RollPagerView mNewsBanner;
+
+        ViewBannerHolder(View v, List<News> topNewses) {
+            super(v);
+            ButterKnife.bind(this, v);
+
+            this.mNewsBanner.setHintView(new ColorPointHintView(v.getContext(), Color.YELLOW, Color.WHITE));
+            this.mNewsBanner.setAdapter(new TopNewsLoopAdapter(mNewsBanner, topNewses));
+        }
+    }
+
+    public class ViewFooterHolder extends RecyclerView.ViewHolder {
+        ViewFooterHolder(View v) {
+            super(v);
+        }
     }
 }

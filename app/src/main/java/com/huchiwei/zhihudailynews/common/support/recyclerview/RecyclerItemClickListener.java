@@ -1,4 +1,4 @@
-package com.huchiwei.zhihudailynews.core.support;
+package com.huchiwei.zhihudailynews.common.support.recyclerview;
 
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +15,9 @@ import android.view.View;
 public abstract class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
 
     private GestureDetectorCompat mGestureDetector;
-    private RecyclerView mRecyclerView;
+    protected RecyclerView mRecyclerView;
+
+    public RecyclerItemClickListener(){}
 
     public RecyclerItemClickListener(RecyclerView recyclerView){
         this.mRecyclerView = recyclerView;

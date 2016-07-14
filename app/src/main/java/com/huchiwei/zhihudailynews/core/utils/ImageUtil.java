@@ -1,14 +1,10 @@
 package com.huchiwei.zhihudailynews.core.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.huchiwei.zhihudailynews.R;
-import com.huchiwei.zhihudailynews.core.Constants;
-
-import java.io.File;
 
 /**
  * 图片处理工具

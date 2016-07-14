@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.huchiwei.zhihudailynews.core.cache.CacheUtil;
 import com.huchiwei.zhihudailynews.core.helper.RetrofitHelper;
 import com.huchiwei.zhihudailynews.core.utils.ImageUtil;
+import com.huchiwei.zhihudailynews.modules.news.activity.NewsActivity;
 import com.huchiwei.zhihudailynews.modules.news.api.NewsService;
 
 import org.json.JSONException;
@@ -23,13 +24,8 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -75,7 +71,7 @@ public class LaunchScreenActivity extends AppCompatActivity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-            Intent intent = new Intent(LaunchScreenActivity.this, MainActivity.class);
+            Intent intent = new Intent(LaunchScreenActivity.this, NewsActivity.class);
             startActivity(intent);
             finish();
             }
