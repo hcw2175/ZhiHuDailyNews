@@ -52,13 +52,13 @@ public class NewsAdapter extends SimpleRecyclerViewAdapter<News, RecyclerView.Vi
 
     @Override
     protected ViewNormalHolder getItemView(ViewGroup parent) {
-        View view = this.mLayoutInflater.inflate(R.layout.adapter_news_list, parent, false);;
+        View view = this.mLayoutInflater.inflate(R.layout.news_adapter, parent, false);;
         return new ViewNormalHolder(view);
     }
 
     @Override
     protected ViewBannerHolder getHeaderView(ViewGroup parent) {
-        View view = this.mLayoutInflater.inflate(R.layout.adapter_news_list_banner, parent, false);;
+        View view = this.mLayoutInflater.inflate(R.layout.news_adapter_banner, parent, false);;
         return new ViewBannerHolder(view, mTopNewses);
     }
 

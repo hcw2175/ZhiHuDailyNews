@@ -4,4 +4,9 @@
     <string name="load_more">加载更多</string>
 
     <string name="launcher_subtitle">每天三次，每次7分钟</string>
+
+    <string name="nav_home">首页</string>
+    <string name="nav_dest">目的地</string>
+    <string name="nav_square">广场</string>
+    <string name="nav_my">我的</string>
 </resources>

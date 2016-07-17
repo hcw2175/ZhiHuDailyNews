@@ -47,7 +47,7 @@ public class NewsDetailActivity extends ToolbarActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_detail);
+        setContentView(R.layout.news_detail_activity);
         ButterKnife.bind(this);
 
         if(null != getSupportActionBar()){

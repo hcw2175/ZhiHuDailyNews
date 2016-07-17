@@ -37,7 +37,7 @@ public class TopNewsLoopAdapter extends LoopPagerAdapter {
 
     @Override
     public View getView(ViewGroup container, int position) {
-        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.adapter_news_list_banner_view, container, false);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.news_adapter_banner_view, container, false);
 
         final News news = this.mTopNews.get(position);
         ImageView imageView = (ImageView)view.findViewById(R.id.news_banner_image);
